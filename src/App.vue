@@ -7,6 +7,13 @@ import { fetchSinaPriceByScript } from "./utils/sinaQuote";
 const STOCK_NAME = "皖能电力";
 const SINA_SYMBOL = "sz000543";
 
+function publicUrl(p?: string) {
+  if (!p) return "";
+  const base = import.meta.env.BASE_URL || "/";
+  const clean = p.startsWith("/") ? p.slice(1) : p;
+  return `${base}${clean}`;
+}
+
 const nowPrice = ref<number | null>(null);
 const quoteTime = ref<string>("");
 const loading = ref<boolean>(true);
@@ -382,6 +389,7 @@ onUnmounted(() => {
     <header class="topbar">
       <div class="topbar-inner">
         <div class="top-image">
+          <img class="top-image-bg" :src="publicUrl('/topic.png')" alt="" aria-hidden="true" />
           <div class="quote-overlay">
             <div class="tag">
               <span :class="dotClass" />
@@ -403,7 +411,7 @@ onUnmounted(() => {
               </div>
               <div class="pops price-pops" aria-hidden="true">
                 <div v-for="p in pricePops" :key="p.id" class="pop" :class="p.cls" :style="{ '--stack': p.stack + 'px' }">
-                  <img class="pop-icon" :src="p.cls === 'pos' ? '/up.svg' : '/down.svg'" alt="" />
+                  <img class="pop-icon" :src="publicUrl(p.cls === 'pos' ? '/up.svg' : '/down.svg')" alt="" />
                 </div>
               </div>
             </div>
@@ -425,7 +433,7 @@ onUnmounted(() => {
         }"
       >
         <div class="avatar-wrap" :class="{ has: !!h.avatarUrl }" aria-hidden="true">
-          <img v-if="(avatarOverride[h.name] || h.avatarUrl)" :src="(avatarOverride[h.name] || h.avatarUrl)!" alt="" />
+          <img v-if="(avatarOverride[h.name] || h.avatarUrl)" :src="publicUrl(avatarOverride[h.name] || h.avatarUrl)" alt="" />
         </div>
 
         <div class="holder-head">

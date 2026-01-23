@@ -124,8 +124,16 @@ body {
     border: none;
     position: relative;
     overflow: hidden;
-    background: url("/topic.png") center / cover no-repeat;
     box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+}
+
+.top-image-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 }
 
 
