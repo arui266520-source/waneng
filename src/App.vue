@@ -52,9 +52,14 @@ let testTimer: number | undefined;
 let testRunning = false;
 
 function updateStageScale() {
-  // 以 1920x1080 为基准进行等比缩放（只缩小不放大），保证不同分辨率下布局比例一致
-  const s = Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080);
-  document.documentElement.style.setProperty("--stage-scale", String(s));
+  // 以 1920x1080 为基准进行等比缩放：
+  // - 16:9（如 3840x2160）会满屏无黑边
+  // - 非 16:9 会在宽或高方向拉满，另一方向可能出现黑边（可接受的 letterbox）
+  const vw = document.documentElement.clientWidth || window.innerWidth;
+  const vh = document.documentElement.clientHeight || window.innerHeight;
+  const s = Math.min(vw / 1920, vh / 1080);
+  // 固定小数位，避免极小抖动触发不必要的重排/重绘
+  document.documentElement.style.setProperty("--stage-scale", s.toFixed(4));
 }
 
 function scheduleUpdateStageScale() {
