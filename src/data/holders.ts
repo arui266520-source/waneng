@@ -35,6 +35,14 @@ export const HOLDERS: Holder[] = [
     ]
   },
   {
+    name: "张伟",
+    avatarUrl: "/zhangwei.jpg",
+    cryAvatarUrl: "/zhangwei-cry.jpg",
+    laughAvatarUrl: "/zhangwei-laugh.jpg",
+    // 持仓：49200 股，买入均价 8.5945（来自截图）
+    lots: [{ price: 8.5945, shares: 49200 }]
+  },
+  {
     name: "舒海林",
     avatarUrl: "/shu.jpg",
     cryAvatarUrl: "/shu-cry.jpg",

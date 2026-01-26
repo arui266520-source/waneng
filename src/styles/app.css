@@ -476,17 +476,17 @@ body {
 }
 
 .holders {
-    /* 放大容器宽度，利用 16:9 画面两侧空余，让 4 个卡片不挤 */
-    max-width: 1400px;
+    /* 放大容器宽度，利用 16:9 画面两侧空余，让 5 个卡片不挤 */
+    max-width: 1800px;
     /* 与上方大价格区拉开距离，避免头像外露部分压住上方内容 */
     margin: 18px auto 0;
     display: grid;
-    /* 桌面端：4 个模块一排并列 */
-    grid-template-columns: repeat(4, 210px);
-    gap: 28px;
+    /* 桌面端：5 个模块一排并列（张伟放在数组中间即可居中） */
+    grid-template-columns: repeat(5, 250px);
+    gap: 50px;
     align-items: start;
     justify-items: center;
-    justify-content: space-between;
+    justify-content: center;
     /* 浮动卡片统一下移的基准（即使动画上浮也不会碰到上方内容） */
     --floatBaseY: 70px;
 }
@@ -513,7 +513,7 @@ body {
         top: 210px;
     }
     .holders {
-        grid-template-columns: repeat(2, 210px);
+        grid-template-columns: repeat(2, minmax(0, 250px));
         justify-content: center;
         gap: 18px;
     }
@@ -754,8 +754,11 @@ body {
     .hero {
         grid-template-columns: 1fr;
     }
+    /* 保持与上方同一断点的 holders 布局一致，避免被后定义的样式覆盖 */
     .holders {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 250px));
+        justify-content: center;
+        gap: 18px;
     }
     .price .num {
         font-size: 72px;
