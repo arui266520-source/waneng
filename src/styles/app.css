@@ -29,13 +29,16 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
-    overflow-y: hidden;
+    /* 允许页面在内容超高时整体下拉 */
+    overflow-y: auto;
 }
 
 .viewport {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
+    /* 让内容参与文档流，超出时由页面滚动 */
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: visible;
     background: var(--bg);
 }
 
@@ -47,11 +50,13 @@ body {
 
 .poster.stage {
     width: 1920px;
-    height: 1080px;
-    position: absolute;
+    /* 允许卡片内容超高时撑开页面高度（便于整体下拉） */
+    min-height: 1080px;
+    height: auto;
+    position: relative;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--stage-scale, 1));
+    top: 0;
+    transform: translateX(-50%) scale(var(--stage-scale, 1));
     transform-origin: center;
 }
 

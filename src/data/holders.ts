@@ -27,9 +27,12 @@ export const HOLDERS: Holder[] = [
     cryAvatarUrl: "/deng-cry.jpg",
     laughAvatarUrl: "/deng-laugh.jpg",
     lots: [
-      { price: 8.71, shares: 1700 },
-      { price: 8.72, shares: 1700 },
-      { price: 8.66, shares: 1200 }
+      // 已按交易记录做 T 后的“当前持仓”更新：
+      // - 8.06 卖出 2050 股（FIFO 扣减持仓）
+      // - 7.95 买入 2100 股（新增一笔持仓）
+      { price: 8.72, shares: 1350 },
+      { price: 8.66, shares: 1200 },
+      { price: 7.95, shares: 2100 }
     ],
     trades: [
       { side: "SELL", price: 8.06, shares: 2050 },
@@ -42,8 +45,9 @@ export const HOLDERS: Holder[] = [
     cryAvatarUrl: "/tang-cry.jpg",
     laughAvatarUrl: "/tang-laugh.jpg",
     lots: [
-      { price: 8.71, shares: 1700 },
-      { price: 8.7, shares: 1900 }
+      // 已按交易记录做 T 后的“当前持仓”更新（FIFO 扣减 + 新增买入）
+      { price: 8.7, shares: 1550 },
+      { price: 7.95, shares: 2100 }
     ],
     trades: [
       { side: "SELL", price: 8.06, shares: 2050 },
