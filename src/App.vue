@@ -482,6 +482,19 @@ onUnmounted(() => {
             </div>
           </div>
         </details>
+
+        <details v-if="h.trades?.length" class="lots" :open="false">
+          <summary class="lots-summary">
+            <span class="lots-title">交易记录</span>
+            <span class="lots-mini">共 {{ h.trades.length }} 笔</span>
+          </summary>
+          <div class="lots-body">
+            <div v-for="(t, i) in h.trades" :key="i" class="lot">
+              <span class="lot-left">{{ t.side === "BUY" ? "买入" : "卖出" }} ¥{{ t.price.toFixed(2) }}</span>
+              <span class="lot-right">{{ t.shares }} 股</span>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
