@@ -27,16 +27,14 @@ export const HOLDERS: Holder[] = [
     cryAvatarUrl: "/deng-cry.jpg",
     laughAvatarUrl: "/deng-laugh.jpg",
     lots: [
-      // 已按交易记录做 T 后的“当前持仓”更新：
-      // - 8.06 卖出 2050 股（FIFO 扣减持仓）
-      // - 7.95 买入 2100 股（新增一笔持仓）
-      { price: 8.72, shares: 1350 },
-      { price: 8.66, shares: 1200 },
-      { price: 7.95, shares: 2100 }
+      { price: 8.71, shares: 1700 },
+      { price: 8.72, shares: 1700 },
+      { price: 8.66, shares: 1200 }
     ],
     trades: [
-      { side: "SELL", price: 8.06, shares: 2050 },
-      { side: "BUY", price: 7.95, shares: 2100 }
+      // 按截图：卖出 4100 / 买入 4200，按比例拆分
+      { side: "SELL", price: 8.06, shares: 2297 },
+      { side: "BUY", price: 7.95, shares: 2353 }
     ]
   },
   {
@@ -45,13 +43,12 @@ export const HOLDERS: Holder[] = [
     cryAvatarUrl: "/tang-cry.jpg",
     laughAvatarUrl: "/tang-laugh.jpg",
     lots: [
-      // 已按交易记录做 T 后的“当前持仓”更新（FIFO 扣减 + 新增买入）
-      { price: 8.7, shares: 1550 },
-      { price: 7.95, shares: 2100 }
+      { price: 8.71, shares: 1700 },
+      { price: 8.7, shares: 1900 }
     ],
     trades: [
-      { side: "SELL", price: 8.06, shares: 2050 },
-      { side: "BUY", price: 7.95, shares: 2100 }
+      { side: "SELL", price: 8.06, shares: 1803 },
+      { side: "BUY", price: 7.95, shares: 1847 }
     ]
   },
   {

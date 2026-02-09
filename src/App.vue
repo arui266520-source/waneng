@@ -7,6 +7,9 @@ import { fetchSinaPriceByScript } from "./utils/sinaQuote";
 const STOCK_NAME = "皖能电力";
 const SINA_SYMBOL = "sz000543";
 
+type BuyLot = Holder["lots"][number];
+type Trade = NonNullable<Holder["trades"]>[number];
+
 function publicUrl(p?: string) {
   if (!p) return "";
   const base = import.meta.env.BASE_URL || "/";
@@ -161,16 +164,59 @@ function calcTotalCost(h: Holder) {
   return h.lots.reduce((sum, l) => sum + l.price * l.shares, 0);
 }
 
+function cloneLots(lots: BuyLot[]) {
+  return lots.map((l) => ({ price: l.price, shares: l.shares }));
+}
+
+function applyTradesToLots(baseLots: BuyLot[], trades?: Trade[]) {
+  const lots = cloneLots(baseLots); // FIFO：先买先卖
+  let realizedPl = 0;
+  if (!trades?.length) return { lots, realizedPl };
+
+  for (const t of trades) {
+    if (t.side === "BUY") {
+      lots.push({ price: t.price, shares: t.shares });
+      continue;
+    }
+    // SELL
+    let remaining = t.shares;
+    while (remaining > 0 && lots.length > 0) {
+      const lot = lots[0]!;
+      const take = Math.min(remaining, lot.shares);
+      realizedPl += (t.price - lot.price) * take;
+      lot.shares -= take;
+      remaining -= take;
+      if (lot.shares === 0) lots.shift();
+    }
+    // 如果卖出数量超过当前持仓，忽略超出部分（不让持仓变成负数）
+  }
+
+  return { lots, realizedPl };
+}
+
+function calcLotsShares(lots: BuyLot[]) {
+  return lots.reduce((sum, l) => sum + l.shares, 0);
+}
+function calcLotsCost(lots: BuyLot[]) {
+  return lots.reduce((sum, l) => sum + l.price * l.shares, 0);
+}
+
 const holdersView = computed(() => {
   const p = nowPrice.value ?? 0;
   return HOLDERS.map((h, idx) => {
-    const shares = calcTotalShares(h);
-    const cost = calcTotalCost(h);
+    const applied = applyTradesToLots(h.lots, h.trades);
+    const liveLots = applied.lots;
+    const realizedPl = applied.realizedPl;
+    const shares = calcLotsShares(liveLots);
+    const cost = calcLotsCost(liveLots);
     const value = p * shares;
-    const pl = value - cost;
+    const unrealizedPl = value - cost;
+    const pl = unrealizedPl + realizedPl; // 累计盈亏（已实现 + 未实现）
     return {
       ...h,
       idx,
+      lots: liveLots,
+      realizedPl,
       shares,
       cost,
       pl
@@ -266,9 +312,13 @@ function applyNewQuote(nextPrice: number) {
 
   // 盈亏动画 & 飘字（按 quote 的价格计算）
   for (const h of HOLDERS) {
-    const shares = calcTotalShares(h);
-    const cost = calcTotalCost(h);
-    const nextPlCents = Math.round((nextPriceCents / 100) * shares * 100 - cost * 100);
+    const applied = applyTradesToLots(h.lots, h.trades);
+    const liveLots = applied.lots;
+    const realizedPl = applied.realizedPl;
+    const shares = calcLotsShares(liveLots);
+    const cost = calcLotsCost(liveLots);
+    const unrealizedPlCents = Math.round((nextPriceCents / 100) * shares * 100 - cost * 100);
+    const nextPlCents = unrealizedPlCents + Math.round(realizedPl * 100);
     const prevPlCents = lastQuotePlCents[h.name];
     if (Number.isFinite(prevPlCents) && nextPlCents !== prevPlCents) {
       const deltaCents = nextPlCents - (prevPlCents as number);
@@ -450,7 +500,7 @@ onUnmounted(() => {
 
         <div class="money">
           <div class="row">
-            <span class="label">浮动盈亏</span>
+            <span class="label">累计盈亏</span>
             <span class="val-wrap">
               <span
                 class="val"
