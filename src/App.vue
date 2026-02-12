@@ -201,14 +201,21 @@ function calcLotsCost(lots: BuyLot[]) {
   return lots.reduce((sum, l) => sum + l.price * l.shares, 0);
 }
 
+function getDerivedHolderState(h: Holder) {
+  const applied = applyTradesToLots(h.lots, h.trades);
+  const liveLots = applied.lots;
+  const realizedPl = applied.realizedPl;
+  const shares = calcLotsShares(liveLots);
+  const cost = calcLotsCost(liveLots);
+  const cleared = shares === 0;
+  return { liveLots, realizedPl, shares, cost, cleared };
+}
+
 const holdersView = computed(() => {
   const p = nowPrice.value ?? 0;
   return HOLDERS.map((h, idx) => {
-    const applied = applyTradesToLots(h.lots, h.trades);
-    const liveLots = applied.lots;
-    const realizedPl = applied.realizedPl;
-    const shares = calcLotsShares(liveLots);
-    const cost = calcLotsCost(liveLots);
+    const derived = getDerivedHolderState(h);
+    const { realizedPl, shares, cost, cleared } = derived;
     const initialCost = calcTotalCost(h); // 只计买入记录（原始 lots）
     const value = p * shares;
     const unrealizedPl = value - cost;
@@ -220,6 +227,7 @@ const holdersView = computed(() => {
       shares,
       cost,
       initialCost,
+      cleared,
       pl
     };
   });
@@ -313,11 +321,21 @@ function applyNewQuote(nextPrice: number) {
 
   // 盈亏动画 & 飘字（按 quote 的价格计算）
   for (const h of HOLDERS) {
-    const applied = applyTradesToLots(h.lots, h.trades);
-    const liveLots = applied.lots;
-    const realizedPl = applied.realizedPl;
-    const shares = calcLotsShares(liveLots);
-    const cost = calcLotsCost(liveLots);
+    const derived = getDerivedHolderState(h);
+    const { realizedPl, shares, cost, cleared } = derived;
+    // 已清仓：累计盈亏固定为“已实现”，不再触发盈亏冒泡/表情切换/动画
+    if (cleared) {
+      const fixedPl = realizedPl;
+      const fixedPlCents = Math.round(fixedPl * 100);
+      // 清仓后不保留表情覆盖
+      if (avatarResetTimer[h.name]) window.clearTimeout(avatarResetTimer[h.name]);
+      avatarResetTimer[h.name] = undefined;
+      avatarOverride.value[h.name] = undefined;
+      displayPl.value[h.name] = fixedPl;
+      lastQuotePlCents[h.name] = fixedPlCents;
+      continue;
+    }
+
     const unrealizedPlCents = Math.round((nextPriceCents / 100) * shares * 100 - cost * 100);
     const nextPlCents = unrealizedPlCents + Math.round(realizedPl * 100);
     const prevPlCents = lastQuotePlCents[h.name];
@@ -360,6 +378,7 @@ function runFooterTest() {
 
     // 盈亏：每个人冒泡 0.00，并触发表情（笑/哭）2 秒
     for (const h of HOLDERS) {
+      if (getDerivedHolderState(h).cleared) continue;
       pushPopWith(getPlPopArr(h.name), cls, "0.00", 18);
       if (cls === "pos") setAvatarTemp(h.name, h.laughAvatarUrl);
       else setAvatarTemp(h.name, h.cryAvatarUrl);
@@ -495,6 +514,7 @@ onUnmounted(() => {
             <div class="avatar-cost-val">¥{{ h.initialCost.toFixed(2) }}</div>
           </div>
         </div>
+        <div v-if="h.cleared" class="cleared-badge">已清仓</div>
 
         <div class="holder-head">
           <div class="who">

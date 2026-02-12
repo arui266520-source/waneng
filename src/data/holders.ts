@@ -34,7 +34,9 @@ export const HOLDERS: Holder[] = [
     trades: [
       // 按截图：卖出 4100 / 买入 4200，按比例拆分
       { side: "SELL", price: 8.06, shares: 2297 },
-      { side: "BUY", price: 7.95, shares: 2353 }
+      { side: "BUY", price: 7.95, shares: 2353 },
+      // 昨日清仓：卖出全部持仓（4600 + 2353 - 2297 = 4656）
+      { side: "SELL", price: 7.9, shares: 4656 }
     ]
   },
   {
@@ -48,7 +50,9 @@ export const HOLDERS: Holder[] = [
     ],
     trades: [
       { side: "SELL", price: 8.06, shares: 1803 },
-      { side: "BUY", price: 7.95, shares: 1847 }
+      { side: "BUY", price: 7.95, shares: 1847 },
+      // 昨日清仓：卖出全部持仓（3600 + 1847 - 1803 = 3644）
+      { side: "SELL", price: 7.9, shares: 3644 }
     ]
   },
   {

@@ -538,6 +538,8 @@ body {
 .holder-card {
     width: 250px;
     max-width: 250px;
+    /* 用于清仓标签定位（与 avatar-wrap 尺寸保持一致） */
+    --avatarSize: 165px;
     /* 顶部需要为“半嵌入”的头像预留空间 */
     padding: 128px 16px 16px;
     border-radius: 22px;
@@ -583,6 +585,29 @@ body {
     overflow: hidden;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
     z-index: 2;
+}
+
+
+/* 已清仓标签：头像正下方，小蓝牌 */
+
+.cleared-badge {
+    position: absolute;
+    left: 50%;
+    /* avatar 圆底部位置（由于 avatar-wrap 以中心对齐在卡片 top=0） */
+    top: calc(var(--avatarSize, 165px) / 2 + 2px);
+    transform: translateX(-50%);
+    z-index: 3;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(180deg, rgba(64, 156, 255, 0.98), rgba(45, 124, 255, 0.92));
+    border: 1px solid rgba(160, 210, 255, 0.45);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 .avatar-wrap.has {
@@ -825,5 +850,6 @@ body {
     }
     .holder-card {
         padding-top: 112px;
+        --avatarSize: 140px;
     }
 }
