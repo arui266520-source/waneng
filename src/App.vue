@@ -209,16 +209,17 @@ const holdersView = computed(() => {
     const realizedPl = applied.realizedPl;
     const shares = calcLotsShares(liveLots);
     const cost = calcLotsCost(liveLots);
+    const initialCost = calcTotalCost(h); // 只计买入记录（原始 lots）
     const value = p * shares;
     const unrealizedPl = value - cost;
     const pl = unrealizedPl + realizedPl; // 累计盈亏（已实现 + 未实现）
     return {
       ...h,
       idx,
-      lots: liveLots,
       realizedPl,
       shares,
       cost,
+      initialCost,
       pl
     };
   });
@@ -489,6 +490,10 @@ onUnmounted(() => {
       >
         <div class="avatar-wrap" :class="{ has: !!h.avatarUrl }" aria-hidden="true">
           <img v-if="(avatarOverride[h.name] || h.avatarUrl)" :src="publicUrl(avatarOverride[h.name] || h.avatarUrl)" alt="" />
+          <div class="avatar-cost">
+            <div class="avatar-cost-label">初始成本</div>
+            <div class="avatar-cost-val">¥{{ h.initialCost.toFixed(2) }}</div>
+          </div>
         </div>
 
         <div class="holder-head">

@@ -594,6 +594,50 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: filter 180ms ease, transform 180ms ease;
+}
+
+
+/* 头像 hover：模糊头像 + 展示初始成本 */
+
+.avatar-cost {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    pointer-events: none;
+    /* 让数字在任何头像上都清晰 */
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 14px 28px rgba(0, 0, 0, 0.65);
+}
+
+.avatar-cost-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.avatar-cost-val {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+}
+
+.avatar-wrap:hover img {
+    filter: blur(5px) brightness(0.7);
+    transform: scale(1.02);
+}
+
+.avatar-wrap:hover .avatar-cost {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .who-name {
@@ -603,15 +647,15 @@ body {
 
 .who-sub {
     margin-top: 4px;
-    font-size: 16px;
+    font-size: 14px;
     color: rgba(255, 255, 255, 0.84);
     letter-spacing: 0.02em;
 }
 
 .money {
     position: relative;
-    margin-top: 14px;
-    padding: 12px 12px;
+    margin-top: 12px;
+    padding: 10px 10px;
     border-radius: 16px;
     background: rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -632,13 +676,13 @@ body {
 }
 
 .label {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.06em;
 }
 
 .val {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
 }
 
@@ -671,7 +715,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 10px 10px;
+    padding: 8px 10px;
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.03);
@@ -682,13 +726,13 @@ body {
 }
 
 .lots-title {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.12em;
 }
 
 .lots-mini {
-    font-size: 14px;
+    font-size: 12px;
     color: var(--muted2);
     letter-spacing: 0.06em;
 }
@@ -700,7 +744,7 @@ body {
 .lot {
     display: flex;
     justify-content: space-between;
-    padding: 7px 10px;
+    padding: 6px 10px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.03);
@@ -714,7 +758,7 @@ body {
 
 .lot-right {
     color: var(--muted2);
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 0.06em;
 }
 
